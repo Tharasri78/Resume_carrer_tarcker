@@ -22,7 +22,7 @@ const jobApplicationSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Applied", "Interview", "Rejected", "Selected"],
+      enum: ["Applied", "Screening", "Interview", "Offer", "Rejected", "Selected"],
       default: "Applied",
     },
 
@@ -36,6 +36,31 @@ const jobApplicationSchema = new mongoose.Schema(
     },
 
     notes: {
+      type: String,
+      trim: true,
+    },
+
+    salary: {
+      type: String,
+      trim: true,
+    },
+
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High"],
+      default: "Medium",
+    },
+
+    tags: [{
+      type: String,
+      trim: true,
+    }],
+
+    deadline: {
+      type: Date,
+    },
+
+    companyLogo: {
       type: String,
       trim: true,
     },

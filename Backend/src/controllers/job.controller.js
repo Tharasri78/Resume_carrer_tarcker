@@ -5,7 +5,7 @@ const JobApplication = require("../models/JobApplication");
 exports.createJob = async (req, res) => {
   try {
 
-    const { company, role, status, followUpDate, notes } = req.body;
+    const { company, role, status, followUpDate, notes, salary, priority, tags, deadline, companyLogo } = req.body;
 
     if (!company || !role) {
       return res.status(400).json({ message: "Company and role required" });
@@ -17,7 +17,12 @@ exports.createJob = async (req, res) => {
       role,
       status,
       followUpDate,
-      notes
+      notes,
+      salary,
+      priority,
+      tags,
+      deadline,
+      companyLogo
     });
 
     res.status(201).json(job);

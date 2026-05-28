@@ -1,106 +1,147 @@
-// pages/auth/Login.jsx
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { Mail, Lock, LogIn, ArrowLeft } from "lucide-react";
+import { showToast } from "../../components/common/Toast";
 
-import { useAuth } from '../../context/AuthContext';
-import '../../styles/auth.css';
+export default function Login() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const { login, loading, error, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  
-  const { login, loading ,error } = useAuth();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(formData.email, formData.password);
+    if (!formData.email || !formData.password) {
+      showToast("Please fill in all fields", "warning");
+      return;
+    }
+    try {
+      await login(formData.email, formData.password);
+    } catch (err) {
+      showToast(err.message || "Login failed", "error");
+    }
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-wrapper">
-        {/* Left Card - Welcome Section */}
-        <div className="auth-left">
-          <div className="auth-left-content">
-            <h1>Welcome Back! </h1>
-            <p>Your job search journey continues here. Track applications, manage resumes, and land your dream job.</p>
-            
-            {/* <div className="auth-left-features">
-              <div className="feature-item">
-                <span className="feature-icon">📊</span>
-                <span className="feature-text">Track job applications in real-time</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">📄</span>
-                <span className="feature-text">Create and manage multiple resumes</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🎯</span>
-                <span className="feature-text">Get personalized job recommendations</span>
-              </div>
-            </div> */}
-            
-            <div className="auth-left-footer">
-              New to JobTracker? <Link to="/register">Create an account</Link>
-            </div>
+    <div className="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
+      {/* Background neon glows */}
+      <div className="absolute top-1/4 left-1/3 w-[400px] h-[400px] bg-violet-600/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] bg-indigo-600/10 rounded-full blur-[90px] pointer-events-none" />
+
+      {/* Back button */}
+      <div className="absolute top-6 left-6 z-10">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-zinc-100 transition-colors bg-zinc-900/50 border border-zinc-800/80 px-3.5 py-2 rounded-lg"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
+      <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
+        <div className="flex justify-center items-center gap-2.5 font-bold text-2xl tracking-tight bg-gradient-to-r from-violet-400 to-indigo-300 bg-clip-text text-transparent mb-6">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white font-black text-sm">
+            JT
           </div>
+          <span>JobTracker</span>
         </div>
+        <h2 className="text-center text-3xl font-extrabold text-zinc-100">Welcome Back</h2>
+        <p className="mt-2 text-center text-sm text-zinc-400">
+          Or{" "}
+          <Link to="/register" className="font-semibold text-violet-400 hover:text-violet-300 transition-colors">
+            create a new account
+          </Link>
+        </p>
+      </div>
 
-        {/* Right Card - Authentication Section */}
-        <div className="auth-right">
-          <div className="auth-right-header">
-            <h2>Sign In</h2>
-          </div>
-
-          <div className="auth-card">
-            <form onSubmit={handleSubmit} className="auth-form">
-              <div className="form-group with-icon">
-                <span className="input-icon"></span>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4">
+        <div className="glass p-8 rounded-2xl shadow-xl border border-zinc-800/50">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Email field */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                Email Address
+              </label>
+              <div className="relative rounded-lg shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Mail className="h-4 w-4 text-zinc-500" />
+                </div>
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email address"
+                  id="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  placeholder="name@example.com"
+                  className="block w-full pl-10 pr-4 py-3 bg-zinc-900/50 border border-zinc-800 rounded-lg text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-transparent transition-all"
                 />
               </div>
-              
-              <div className="form-group with-icon">
-                <span className="input-icon"></span>
+            </div>
+
+            {/* Password field */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                Password
+              </label>
+              <div className="relative rounded-lg shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock className="h-4 w-4 text-zinc-500" />
+                </div>
                 <input
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  id="password"
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  placeholder="••••••••"
+                  className="block w-full pl-10 pr-4 py-3 bg-zinc-900/50 border border-zinc-800 rounded-lg text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-transparent transition-all"
                 />
               </div>
+            </div>
 
-                {/* Error Message */}
-            {error && <p className="auth-error">{error}</p>}    
-               
-              <button type="submit" className="auth-button" disabled={loading}>
-                {loading ? <span className="spinner"></span> : 'Sign In'}
+            {/* Error notice */}
+            {error && (
+              <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-lg font-medium">
+                {error}
+              </div>
+            )}
+
+            {/* Submit button */}
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 shadow-md shadow-violet-600/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-600 focus:ring-offset-zinc-950 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign In</span>
+                  </>
+                )}
               </button>
-            </form>
-
-            
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
