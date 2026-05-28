@@ -46,6 +46,7 @@ export default function Dashboard() {
   });
 
   const [recentJobs, setRecentJobs] = useState([]);
+  const [activityFeed, setActivityFeed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [useDemoData, setUseDemoData] = useState(false);
   const [onboardingDismissed, setOnboardingDismissed] = useState(() => {
@@ -92,15 +93,16 @@ export default function Dashboard() {
       const jobList = await getJobs();
       
       // Calculate dynamic stats
-      if (serverStats && serverStats.total > 0) {
+      if (serverStats) {
         setStats(serverStats);
         setRecentJobs(jobList.slice(0, 4));
         setUseDemoData(false);
+        setActivityFeed([]);
 
         // Update profile completion status
         const hasJobs = jobList.length > 0;
         const hasResume = jobList.some(j => j.notes && j.notes.includes("resume")); // rough approximation or true
-        const completionScore = 25 + (hasResume ? 25 : 0) + (hasJobs ? 25 : 0) + 25; // mock analyzer score inclusion
+        const completionScore = 25 + (hasResume ? 25 : 0) + (hasJobs ? 25 : 0) + 25;
         setProfileCompletion({
           details: true,
           resume: hasResume,
@@ -109,17 +111,18 @@ export default function Dashboard() {
           score: completionScore
         });
       } else {
-        // Force demo data when account is brand new to avoid empty screens
-        setStats(demoStats);
-        setRecentJobs(demoJobs);
-        setUseDemoData(true);
+        setStats({ total: 0, Applied: 0, Screening: 0, Interview: 0, Offer: 0, Rejected: 0, Selected: 0 });
+        setRecentJobs([]);
+        setActivityFeed([]);
+        setUseDemoData(false);
       }
     } catch (err) {
       console.error("Error loading dashboard details:", err);
-      // fallback to demo data
-      setStats(demoStats);
-      setRecentJobs(demoJobs);
-      setUseDemoData(true);
+      setStats({ total: 0, Applied: 0, Screening: 0, Interview: 0, Offer: 0, Rejected: 0, Selected: 0 });
+      setRecentJobs([]);
+      setActivityFeed([]);
+      setUseDemoData(false);
+      showToast("Could not load dashboard data. Showing your live account state.", "warning");
     } finally {
       setLoading(false);
     }
@@ -133,11 +136,13 @@ export default function Dashboard() {
     if (useDemoData) {
       setStats({ total: 0, Applied: 0, Screening: 0, Interview: 0, Offer: 0, Rejected: 0, Selected: 0 });
       setRecentJobs([]);
+      setActivityFeed([]);
       setUseDemoData(false);
-      showToast("Switched to your real (empty) database states.", "info");
+      showToast("Switched to your real (empty) dashboard.", "info");
     } else {
       setStats(demoStats);
       setRecentJobs(demoJobs);
+      setActivityFeed(demoActivities);
       setUseDemoData(true);
       showToast("Loaded fully populated demo dataset.", "success");
     }
@@ -484,22 +489,28 @@ export default function Dashboard() {
           </div>
 
           <div className="relative border-l border-zinc-200 dark:border-zinc-900 pl-4 space-y-5 my-5 ml-1">
-            {demoActivities.map((act) => (
-              <div key={act.id} className="relative">
-                {/* Timeline node */}
-                <div className={`absolute -left-[21px] top-0.5 w-2.5 h-2.5 rounded-full border ${
-                  act.type === "ai"
-                    ? "bg-violet-500 border-violet-500/50"
-                    : act.type === "status"
-                    ? "bg-amber-500 border-amber-500/50"
-                    : "bg-zinc-500 border-zinc-800"
-                }`} />
-                <div>
-                  <p className="text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-300 font-medium">{act.text}</p>
-                  <span className="text-[9px] text-zinc-500 block mt-0.5">{act.time}</span>
-                </div>
+            {activityFeed.length === 0 ? (
+              <div className="py-8 text-center border border-dashed border-zinc-800 rounded-xl">
+                <p className="text-xs text-zinc-500">No activity recorded yet.</p>
+                <p className="text-[10px] text-zinc-400 mt-2">Start by adding a resume, application, or ATS scan.</p>
               </div>
-            ))}
+            ) : (
+              activityFeed.map((act) => (
+                <div key={act.id} className="relative">
+                  <div className={`absolute -left-[21px] top-0.5 w-2.5 h-2.5 rounded-full border ${
+                    act.type === "ai"
+                      ? "bg-violet-500 border-violet-500/50"
+                      : act.type === "status"
+                      ? "bg-amber-500 border-amber-500/50"
+                      : "bg-zinc-500 border-zinc-800"
+                  }`} />
+                  <div>
+                    <p className="text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-300 font-medium">{act.text}</p>
+                    <span className="text-[9px] text-zinc-500 block mt-0.5">{act.time}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
