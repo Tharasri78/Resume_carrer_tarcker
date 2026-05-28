@@ -74,7 +74,7 @@ export default function Home() {
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-violet-500/20 bg-violet-500/5 text-violet-300 text-xs font-semibold"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Introducing Gemini-powered ATS Resume Scanning</span>
+          <span>Introducing  ATS Resume Scanning</span>
         </motion.div>
 
         <motion.h1
@@ -255,7 +255,7 @@ export default function Home() {
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
                 <ScanLine className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold">Gemini ATS Scanner</h3>
+              <h3 className="text-xl font-bold"> ATS Scanner</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
                 Audit your resume directly against targeted job specifications in real-time. Uncover missing keyword gaps, structure suggestions, and domain skill ratings.
               </p>
