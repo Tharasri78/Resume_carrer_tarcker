@@ -1,36 +1,37 @@
-# Resume Job Tracker
+﻿# Resume Job Tracker
 
-A **full-stack application** for tracking job applications, managing resumes, and monitoring career progress from a single dashboard.
+Resume Job Tracker is a polished full-stack web application for managing job applications, organizing resumes, and tracking career progress from a single, secure dashboard.
 
-Users can:
+## Table of Contents
 
-- Create and manage job applications
-- Track application status and interview progress
-- Upload and organize resumes
-- Receive notifications and follow-up reminders
-- Access protected pages with secure authentication
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Repository Structure](#repository-structure)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [API Endpoints](#api-endpoints)
+- [Deployment](#deployment)
+- [Author](#author)
+- [License](#license)
 
----
+## Overview
 
-## Live Demo
+This project combines a React-powered frontend with a Node.js and Express backend, backed by MongoDB for persistent storage. It provides authenticated users with tools to track applications, manage resumes, and receive reminders in a modern and responsive interface.
 
-- Frontend: https://resume-job-tracker-bay.vercel.app
-- Demo Video: https://drive.google.com/file/d/1EfBOe7XZn-yhxwRHwLvPQ0qzbxHX9DJx/view?usp=drivesdk
+## Features
 
----
-
-## Key Features
-
-- JWT-based user authentication
-- Protected frontend routes
-- Job application CRUD operations
-- Resume management
-- Application status tracking (Applied, Interview, Rejected, Selected)
-- Dashboard analytics and statistics
-- Notification system for reminders
-- Responsive UI built with React and Tailwind
-
----
+- Secure JWT-based authentication
+- Protected client-side routes
+- Job application CRUD functionality
+- Resume upload, storage, and retrieval
+- Status tracking for applications: Applied, Interview, Rejected, Selected
+- ATS resume analyzer with job description matching
+- AI-powered resume improvement suggestions
+- Follow-up scheduling and deadline notifications
+- Dashboard insights and summary statistics
+- Responsive UI for desktop and mobile
 
 ## Tech Stack
 
@@ -46,8 +47,8 @@ Users can:
 
 - Node.js
 - Express
-- MongoDB (Mongoose)
-- JWT Authentication
+- MongoDB with Mongoose
+- JSON Web Tokens (JWT)
 - CORS
 - dotenv
 
@@ -55,163 +56,155 @@ Users can:
 
 - Frontend: Vercel
 - Backend: Render
+- Database: MongoDB Atlas
 
----
+## Architecture
 
-## System Architecture
+`	ext
+React Frontend
+      ↕
+Express API Backend
+      ↕
+   MongoDB Atlas
+`
 
-```
-React Frontend (Vercel)
-        │
-        ▼
-Node.js + Express Backend (Render)
-        │
-        ▼
-MongoDB Atlas
-```
-
----
+- Frontend: handles user interaction, state management, and API integration.
+- Backend: exposes RESTful endpoints, enforces authentication, and manages business logic.
+- Database: stores users, job records, resumes, and notifications.
 
 ## Repository Structure
 
 ### Frontend
 
-```
+`	ext
 Frontend/
   src/
-    api/            # API request utilities
-    assets/         # Static assets
-    components/     # Reusable UI components
-    context/        # Auth and theme providers
-    pages/          # Screen pages and views
-    styles/         # CSS files
-```
+    api/          # API request utilities
+    assets/       # Static assets
+    components/   # Reusable UI components
+    context/      # Auth and theme providers
+    pages/        # Application views
+    styles/       # CSS files
+`
 
 ### Backend
 
-```
+`	ext
 Backend/
   src/
-    controllers/    # Request handlers and business logic
-    middleware/     # Auth and error middleware
-    models/         # Mongoose schemas
-    routes/         # API routes
-    utils/          # Helper functions
-```
+    controllers/  # Route handlers and business logic
+    middleware/   # Authentication and request middleware
+    models/       # Mongoose schemas
+    routes/       # API endpoint definitions
+    utils/        # Helper utilities
+`
 
----
+## Installation
+
+### 1. Clone the repository
+
+`ash
+git clone https://github.com/Tharasri78/Resume_carrer_tarcker.git
+cd  Resume and carrer tracker
+`
+
+### 2. Install backend dependencies
+
+`ash
+cd Backend
+npm install
+`
+
+### 3. Install frontend dependencies
+
+`ash
+cd ../Frontend
+npm install
+`
+
+### 4. Run locally
+
+Start the backend:
+
+`ash
+cd ../Backend
+npm run dev
+`
+
+Start the frontend:
+
+`ash
+cd ../Frontend
+npm run dev
+`
+
+The app should be available at http://localhost:5173 and the backend API at http://localhost:5000.
 
 ## Environment Variables
 
-### Backend (`Backend/.env`)
+### Backend (Backend/.env)
 
-```
+`env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secure_secret_key
-```
+`
 
-### Frontend (`Frontend/.env`)
+### Frontend (Frontend/.env)
 
-```
+`env
 VITE_API_BASE_URL=http://localhost:5000/api
-```
+`
 
-> Note: Update the frontend API base URL for local development and production deployments as needed.
-
----
-
-## Installation & Local Setup
-
-### 1. Clone repository
-
-```bash
-git clone https://github.com/Tharasri78/Resume_carrer_tarcker.git
-cd "Resume and carrer tracker"
-```
-
-### 2. Backend setup
-
-```bash
-cd Backend
-npm install
-npm run dev
-```
-
-Backend will start on `http://localhost:5000` by default.
-
-### 3. Frontend setup
-
-```bash
-cd ../Frontend
-npm install
-npm run dev
-```
-
-Frontend will start on `http://localhost:5173` by default.
-
----
+> Do not commit .env files. Keep secrets secure and use environment-specific values.
 
 ## API Endpoints
 
 ### Authentication
 
-```
+`http
 POST /api/auth/register
 POST /api/auth/login
-```
+`
 
-### Job Management
+### Jobs
 
-```
+`http
 GET    /api/jobs
 POST   /api/jobs
 GET    /api/jobs/:id
 PUT    /api/jobs/:id
 DELETE /api/jobs/:id
-```
+`
 
 ### Dashboard
 
-```
+`http
 GET /api/dashboard/stats
-```
+`
 
 ### Notifications
 
-```
+`http
 GET    /api/notifications
 POST   /api/notifications
 PUT    /api/notifications/:id
 DELETE /api/notifications/:id
-```
+`
 
----
+## Deployment
 
-## Notes
+- Deploy the frontend to Vercel.
+- Deploy the backend to Render.
+- Configure MongoDB Atlas for production.
+- Set VITE_API_BASE_URL to the production backend URL.
 
-- Make sure MongoDB Atlas is configured and accessible from the backend.
-- Keep `JWT_SECRET` secure and do not commit `.env` files to source control.
-- For production, update `VITE_API_BASE_URL` to the deployed backend URL.
-
-GET /api/notifications
-
-```
-
----
-
-# Author
+## Author
 
 **Thara Sri**
 
-GitHub
-[https://github.com/Tharasri78](https://github.com/Tharasri78)
+- GitHub: https://github.com/Tharasri78
 
----
+## License
 
-# License
-
-This project is developed for **learning and portfolio demonstration purposes**.
-
----
-```
+This project is intended for learning and portfolio demonstration purposes.
